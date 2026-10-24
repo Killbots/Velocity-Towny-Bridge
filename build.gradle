@@ -1,0 +1,21 @@
+plugins { id 'base' }
+
+allprojects {
+    group = 'net.modernmc'
+    version = '1.0.0'
+    repositories {
+        mavenCentral()
+        maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    java {
+        toolchain { languageVersion = JavaLanguageVersion.of(21) }
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 21
+    }
+}

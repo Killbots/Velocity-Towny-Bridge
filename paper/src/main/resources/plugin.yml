@@ -1,0 +1,6 @@
+name: ModernMCTownyBridge
+version: 1.0.0
+main: net.modernmc.townybridge.TownyBridgePaper
+api-version: '1.21'
+depend: [Towny]
+description: Towny info and bank bridge for the ModernMC Velocity proxy

@@ -1,0 +1,9 @@
+{
+  "id": "modernmc-townybridge",
+  "name": "ModernMC Towny Bridge",
+  "version": "1.0.0",
+  "description": "Towny info and bank transactions across the ModernMC Velocity network",
+  "authors": ["ModernMC"],
+  "dependencies": [],
+  "main": "net.modernmc.townybridge.TownyBridgeVelocity"
+}
