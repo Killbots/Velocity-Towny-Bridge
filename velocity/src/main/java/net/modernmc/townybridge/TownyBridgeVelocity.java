@@ -55,6 +55,10 @@ public final class TownyBridgeVelocity {
         }
         event.setResult(CommandExecuteEvent.CommandResult.denied());
         UUID playerId = player.getUniqueId();
+        if (parts.length >= 2 && parts[1].equalsIgnoreCase("spawn")) {
+            teleportToTownSpawn(player, playerId, command);
+            return;
+        }
         if (parts.length > 1 && (parts[1].equalsIgnoreCase("deposit") || parts[1].equalsIgnoreCase("withdraw"))) {
             if (parts.length != 3 || !isValidAmount(parts[2])) {
                 player.sendMessage(Component.text("Usage: /t " + parts[1].toLowerCase(java.util.Locale.ROOT) + " <whole number|all>"));
@@ -104,6 +108,29 @@ public final class TownyBridgeVelocity {
         } catch (NumberFormatException error) {
             return false;
         }
+    }
+
+    private void teleportToTownSpawn(Player player, UUID playerId, String command) {
+        Optional<RegisteredServer> townyServer = proxy.getServer(BRIDGE_PATH);
+        if (townyServer.isEmpty()) {
+            player.sendMessage(Component.text("The Towny server is unavailable right now. Please try again shortly."));
+            return;
+        }
+
+        player.createConnectionRequest(townyServer.get()).connect().thenAccept(result -> {
+            proxy.getPlayer(playerId).ifPresent(online -> {
+                if (result.isSuccessful()) {
+                    online.spoofChatInput(command);
+                } else {
+                    online.sendMessage(Component.text("Could not connect you to the Towny server right now. Please try again shortly."));
+                }
+            });
+        }).exceptionally(error -> {
+            logger.warn("Could not connect a player to the Towny server for a spawn request", error);
+            proxy.getPlayer(playerId).ifPresent(online -> online.sendMessage(
+                    Component.text("Could not connect you to the Towny server right now. Please try again shortly.")));
+            return null;
+        });
     }
 
     private String buildRequest(UUID playerId, String[] parts) {

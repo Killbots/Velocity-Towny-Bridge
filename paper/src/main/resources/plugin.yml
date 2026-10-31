@@ -1,5 +1,5 @@
 name: ModernMCTownyBridge
-version: 1.0.0
+version: 1.0.1
 main: net.modernmc.townybridge.TownyBridgePaper
 api-version: '1.21'
 depend: [Towny]

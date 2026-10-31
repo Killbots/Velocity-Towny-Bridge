@@ -1,22 +1,25 @@
-# ModernMC Towny Bridge
+# Towny Bridge
 
-ModernMC Towny Bridge has two parts: a Velocity plugin that intercepts Towny commands while a player is on another backend, and a Paper plugin on the Towny backend that queries Towny and performs town bank transactions.
+Towny Bridge connects a Velocity proxy to a Paper backend running Towny. It supports town information and bank commands from other backend servers, and routes town spawn commands to the Towny server.
 
 ## Features
 
-- `/t`, `/town`, `/town <name>`: show town information.
-- `/t residents [town]` and `/t online [town]`: show resident lists.
-- `/t deposit <whole number|all>` and `/t withdraw <whole number|all>`: use the player's town bank while connected to another backend.
-- On the Towny backend, Towny's own commands handle requests normally.
+- `/t`, `/town`, and `/town <name>` show town information.
+- `/t residents [town]` and `/t online [town]` show resident lists.
+- `/t deposit <whole number|all>` and `/t withdraw <whole number|all>` run town bank transactions.
+- `/t spawn` routes the player to their own town spawn; `/t spawn <town>` routes them to the named town's spawn. Towny applies its access rules.
+- On the Towny backend, Towny's native commands handle requests.
 
-## Requirements and setup
+## Requirements
 
 - Java 21 or newer.
 - Velocity 3.5.x and Paper 1.21.11.
-- Towny installed on the Paper backend named `Towny` in the Velocity configuration.
-- The Paper plugin's Towny setting must allow bank actions away from town or bank plots for remote transactions.
+- Towny installed on the Paper backend registered as `Towny` in Velocity.
+- Towny's settings must permit remote bank actions away from town or bank plots.
 
-Install the Velocity JAR from `velocity/build/libs/` into the Velocity `plugins/` directory. Install the Paper JAR from `paper/build/libs/` into the Towny backend's `plugins/` directory. Restart both services after installing or upgrading.
+## Setup
+
+Install the Velocity JAR from `velocity/build/libs/` into Velocity's `plugins/` directory. Install the Paper JAR from `paper/build/libs/` into the Towny backend's `plugins/` directory, then restart both services.
 
 Build both JARs with Gradle 8.7 or newer and a Java 21 JDK:
 
@@ -24,14 +27,13 @@ Build both JARs with Gradle 8.7 or newer and a Java 21 JDK:
 gradle build
 ```
 
-The bridge uses a local HTTP endpoint on `127.0.0.1:28645` between the Velocity process and Towny backend plugin. Keep both processes on the same host; the endpoint is intentionally not exposed on a network interface. The fixed port must be available on the Towny backend host.
+The Velocity and Paper plugins communicate through an HTTP endpoint on `127.0.0.1:28645`. Run both processes on the same host and make sure the port is available. The endpoint only listens on the loopback interface.
 
-Town bank actions are handled by Towny's native transaction methods, including its economy checks and transaction events. Withdrawals also require Towny mayor status or the `towny.command.town.withdraw` permission as seen by Velocity. Amounts are whole numbers; `all` uses the available balance.
+Town bank actions use Towny's native transaction methods, including its economy checks and transaction events. Withdrawals require mayor status or the `towny.command.town.withdraw` permission. Amounts must be whole numbers; `all` uses the available balance.
 
 ## Modules
 
 - `velocity/`: Velocity command bridge.
 - `paper/`: Paper and Towny integration.
 
-This repository does not currently include a license file.
-# Velocity-Towny-Bridge
+This repository does not include a license file.
