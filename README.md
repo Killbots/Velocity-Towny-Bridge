@@ -1,4 +1,4 @@
-# Towny Bridge
+# Velocity Towny Bridge
 
 Towny Bridge connects a Velocity proxy to a Paper backend running Towny. It supports town information and bank commands from other backend servers, and routes town spawn commands to the Towny server.
 
